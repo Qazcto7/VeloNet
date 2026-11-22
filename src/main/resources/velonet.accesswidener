@@ -1,0 +1,5 @@
+accessWidener	v1	official
+
+accessible	method	net/minecraft/network/Varint21FrameDecoder	decode	(Lio/netty/channel/ChannelHandlerContext;Lio/netty/buffer/ByteBuf;Ljava/util/List;)V
+accessible	field	net/minecraft/network/CompressionDecoder	inflater	Ljava/util/zip/Inflater;
+accessible	field	net/minecraft/network/CompressionEncoder	deflater	Ljava/util/zip/Deflater;

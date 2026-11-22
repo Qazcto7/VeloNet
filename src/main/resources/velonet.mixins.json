@@ -1,0 +1,22 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "io.github.qazcto7.velonet.mixin",
+  "compatibilityLevel": "JAVA_25",
+  "plugin": "io.github.qazcto7.velonet.mod.shared.VeloNetMixinPlugin",
+  "client": [],
+  "mixins": [
+    "shared.debugaid.ResourceLeakDetectorDisableConditionalMixin",
+    "shared.network.microopt.Utf8StringMixin",
+    "shared.network.microopt.VarIntMixin",
+    "shared.network.pipeline.LegacyQueryHandlerMixin",
+    "shared.network.pipeline.Varint21FrameDecoderMixin",
+    "shared.network.pipeline.compression.ConnectionMixin",
+    "shared.network.pipeline.encryption.ConnectionMixin",
+    "shared.network.pipeline.encryption.ServerLoginPacketListenerImplMixin",
+    "shared.network.pipeline.prepender.ConnectionMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

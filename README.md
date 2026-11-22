@@ -1,22 +1,78 @@
-![Krypton logo](https://user-images.githubusercontent.com/16436212/102424564-692de280-3fd9-11eb-98a2-ac125cb8e507.png)
+# VeloNet ⚡
 
-# Krypton
-![Mod loader: Fabric](https://img.shields.io/badge/modloader-Fabric-1976d2?style=flat-square&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsTAAALEwEAmpwYAAAFHGlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS42LWMxNDIgNzkuMTYwOTI0LCAyMDE3LzA3LzEzLTAxOjA2OjM5ICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIgeG1sbnM6cGhvdG9zaG9wPSJodHRwOi8vbnMuYWRvYmUuY29tL3Bob3Rvc2hvcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ0MgMjAxOCAoV2luZG93cykiIHhtcDpDcmVhdGVEYXRlPSIyMDE4LTEyLTE2VDE2OjU0OjE3LTA4OjAwIiB4bXA6TW9kaWZ5RGF0ZT0iMjAxOS0wNy0yOFQyMToxNzo0OC0wNzowMCIgeG1wOk1ldGFkYXRhRGF0ZT0iMjAxOS0wNy0yOFQyMToxNzo0OC0wNzowMCIgZGM6Zm9ybWF0PSJpbWFnZS9wbmciIHBob3Rvc2hvcDpDb2xvck1vZGU9IjMiIHBob3Rvc2hvcDpJQ0NQcm9maWxlPSJzUkdCIElFQzYxOTY2LTIuMSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDowZWRiMWMyYy1mZjhjLWU0NDEtOTMxZi00OTVkNGYxNGM3NjAiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6MGVkYjFjMmMtZmY4Yy1lNDQxLTkzMWYtNDk1ZDRmMTRjNzYwIiB4bXBNTTpPcmlnaW5hbERvY3VtZW50SUQ9InhtcC5kaWQ6MGVkYjFjMmMtZmY4Yy1lNDQxLTkzMWYtNDk1ZDRmMTRjNzYwIj4gPHhtcE1NOkhpc3Rvcnk+IDxyZGY6U2VxPiA8cmRmOmxpIHN0RXZ0OmFjdGlvbj0iY3JlYXRlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDowZWRiMWMyYy1mZjhjLWU0NDEtOTMxZi00OTVkNGYxNGM3NjAiIHN0RXZ0OndoZW49IjIwMTgtMTItMTZUMTY6NTQ6MTctMDg6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCBDQyAyMDE4IChXaW5kb3dzKSIvPiA8L3JkZjpTZXE+IDwveG1wTU06SGlzdG9yeT4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz4/HiGMAAAAtUlEQVRYw+XXrQqAMBQF4D2P2eBL+QIG8RnEJFaNBjEum+0+zMQLtwwv+wV3ZzhhMDgfJ0wUSinxZUQWgKos1JP/AbD4OneIDyQPwCFniA+EJ4CaXm4TxAXCC0BNHgLhAdAnx9hC8PwGSRtAFVMQjF7cNTWED8B1cgwW20yfJgAvrssAsZ1cB3g/xckAxr6FmCDU5N6f488BrpCQ4rQBJkiMYh4ACmLzwOQF0CExinkCsvw7vgGikl+OotaKRwAAAABJRU5ErkJggg==) ![all](https://img.shields.io/badge/environment-any-4caf50?style=flat-square)
+**VeloNet** *(formerly known as KryptonPlus)* is an independent, unofficial fork of [Krypton](https://github.com/astei/krypton) by Andrew Steinborn (`tuxed`) for **Minecraft 26.3 (Fabric)**, powered by [PaperMC Velocity](https://github.com/PaperMC/Velocity) networking natives.
 
-Krypton is a Fabric mod that attempts to optimize the Minecraft networking stack. It derives from work
-done in the [Velocity](https://velocitypowered.com/) and [Paper](https://papermc.io) projects.
+> **Disclaimer:** VeloNet is an independent community fork and is **not affiliated with, sponsored by, or endorsed by** Andrew Steinborn (`tuxed`) or the original Krypton project.
 
-Krypton derives itself from Ancient Greek _kryptos_, which means "the hidden one". This makes
-it evident most of the benefit from Krypton is "hidden" but is noticeable by a server administrator.
+---
 
-[The wiki contains important information &ndash; read it](https://github.com/astei/krypton/wiki).
+## What Upstream Krypton Does
 
-## Compiling / Releases
+Upstream [Krypton](https://github.com/astei/krypton) optimizes Minecraft's Netty networking stack by:
+- Replacing vanilla Java `Deflater`/`Inflater` packet compression with Velocity's native `libdeflate` bindings (with JVM fallback).
+- Replacing vanilla Java cipher handlers with Velocity's native OpenSSL AES-CFB8 encryption (with JVM AES-NI fallback).
+- Speeding up VarInt length calculation/encoding, VarInt21 frame splitting, and UTF-8 string serialization.
+- Tuning Netty's pooled allocator chunk size (`io.netty.allocator.maxOrder=9`) and preventing redundant leak detector overrides.
 
-**CAUTION!** I do not provide any guarantees about Krypton's stability, compatibility with other mods,
-             ability to be used on every server, or support for every possible setup out there. Support
-             for this mod is provided on a "best-effort" basis. This is not my day job, it is a hobby
-             growing out of related work I've done. **You have been warned.**
+---
 
-Releases I deem reasonably stable can be found on [GitHub](https://github.com/astei/krypton/releases),
-[CurseForge](https://www.curseforge.com/minecraft/mc-mods/krypton), and on [Modrinth](https://modrinth.com/mod/krypton).
+## What VeloNet Changes & Improves
+
+VeloNet diverges significantly from upstream Krypton to provide modern mod-pack compatibility, eliminate off-heap native memory leaks, and harden the Netty pipeline across platforms:
+
+- **ViaFabricPlus 5.1.3+ Pipeline Support:**
+  - Automatically reorders Netty `compress` / `decompress` handlers around `via-decoder` / `via-encoder` and maintains ViaFabricPlus 5.1.3's `via-flow-control` (`NoReadFlowControlHandler`) ordering without disconnects.
+  - Detects ViaLegacy's `vialegacy-pre-netty-length-remover` (cached via channel attribute) and seamlessly switches to unified single-buffer framing to prevent `IndexOutOfBoundsException` on legacy servers.
+  - Preserves `KryptonPipelineEvent` signaling for third-party pipeline listeners.
+- **PacketFixer Integration & Off-Heap Leak Fixes:**
+  - Dynamically reads and clamps PacketFixer's configured packet size limit (`dev.tonimatas.packetfixer.util.Config.getDecoderSize()`) instead of hard-failing on large modded payloads.
+  - Immediately releases vanilla's unused `Varint21FrameDecoder.helperBuf` at construction and after PacketFixer's `@Inject(HEAD)` re-allocation, eliminating a per-connection off-heap direct memory leak.
+  - Guards `Utf8String.write` against 32-bit signed integer overflow when PacketFixer passes large string length limits (`> Integer.MAX_VALUE / 3`).
+- **e4mc Compatibility:**
+  - Replaces fragile login encryption redirection with MixinExtras `@WrapOperation` on `ServerLoginPacketListenerImpl.handleKey`, gracefully delegating when `e4mc` disables packet-level encryption on Dialtone connections and falling back cleanly to vanilla encryption if native initialization fails.
+- **Netty Lifecycle & Cross-Platform Safety:**
+  - Intercepts writes on inactive channels in `write()` (`PipelineUtil.dropWriteIfInactive`) instead of returning empty output from `encode()`, eliminating Netty 4.2 `EncoderException: must produce at least one message` crashes.
+  - Removes premature native cipher/compressor disposal during outbound `close()`, relying safely on `handlerRemoved` / `handlerRemoved0` lifecycle cleanup and guarding buffer release on `Throwable`/`Error`.
+  - Ensures single-NIO-buffer compatibility (`nioBufferCount() == 1`) for `CompositeByteBuf` inputs on `JavaVelocityCompressor` (fixing Windows and Intel macOS crashes).
+  - Handles zero-byte frames cleanly when compression `threshold == 0` and adds a DEFLATE theoretical expansion-ratio (1032:1) zip-bomb guard.
+  - Extends vanilla `CompressionDecoder` / `CompressionEncoder` directly so `instanceof` checks in other mods continue to work, while ending unused vanilla `Inflater`/`Deflater` instances immediately.
+- **Additional Networking Refinements:**
+  - Coalesces small packets (`<= 128` bytes) into a single buffer in `MinecraftVarintPrepender` while preserving zero-copy scatter/gather writes for larger packets.
+  - Preserves Minecraft 26.3's `BandwidthDebugMonitor` (F3 network graph) metrics in `Varint21FrameDecoder`.
+  - Removes the upstream entity tracker mixin so VeloNet stays strictly focused on the networking layer with zero conflicts alongside mods like **Eunomia**, **Sodium**, **Lithium**, **TT20**, **ModernFix**, and **ResourceTrimmer**.
+
+---
+
+## Compatibility & Requirements
+
+| Requirement | Details |
+| --- | --- |
+| **Mod Loader** | Fabric (`Fabric Loader >= 0.18.4`) |
+| **Minecraft** | `26.3` |
+| **Java** | `Java 25+` |
+| **Dependencies** | None *(Fabric API is **not** required)* |
+| **Environment** | Client & Server *(Singleplayer, Multiplayer, Dedicated Servers)* |
+| **Drop-In Compatibility** | Declares `provides: ["krypton", "kryptonplus"]` — do not install alongside upstream **Krypton** |
+
+---
+
+## Building from Source
+
+Requires **JDK 25**. All dependencies (including `com.velocitypowered:velocity-native`) are resolved directly from official Maven repositories.
+
+```bash
+./gradlew clean build
+```
+
+Built JAR files are written to `build/libs/`:
+- `velonet-<version>.jar`
+- `velonet-<version>-sources.jar`
+
+---
+
+## Credits & License
+
+- Upstream **Krypton** mod by [Andrew Steinborn (`tuxed`)](https://github.com/astei/krypton)
+- Native compression & encryption libraries by [PaperMC Velocity](https://github.com/PaperMC/Velocity)
+
+Licensed under the **GNU Lesser General Public License v3.0 (LGPL-3.0)** — see [LICENSE](LICENSE) for full license terms.

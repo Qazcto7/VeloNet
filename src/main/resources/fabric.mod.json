@@ -1,34 +1,42 @@
 {
   "schemaVersion": 1,
-  "id": "krypton",
+  "id": "velonet",
+  "provides": [
+    "krypton",
+    "kryptonplus"
+  ],
   "version": "${version}",
-  "name": "Krypton",
-  "description": "A Fabric mod that optimizes the Minecraft networking stack and entity tracker.",
+  "name": "VeloNet",
+  "description": "An independent Fabric network stack optimization mod forked from Krypton, featuring ViaFabricPlus 5.1.3, PacketFixer, e4mc, and Eunomia compatibility.",
   "authors": [
-    "tuxed"
+    "Kazim"
+  ],
+  "contributors": [
+    "Andrew Steinborn (tuxed) - Original Krypton author"
   ],
   "contact": {
-    "website": "https://github.com/astei/krypton",
-    "repo": "https://github.com/astei/krypton"
+    "homepage": "https://github.com/Qazcto7/VeloNet",
+    "sources": "https://github.com/Qazcto7/VeloNet",
+    "issues": "https://github.com/Qazcto7/VeloNet/issues"
   },
   "license": "LGPL-3.0",
-  "icon": "assets/krypton/icon.png",
+  "icon": "assets/velonet/icon.png",
   "environment": "*",
   "entrypoints": {
     "client": [
-      "me.steinborn.krypton.mod.client.KryptonClientInitializer"
+      "io.github.qazcto7.velonet.mod.client.VeloNetClientInitializer"
     ],
     "server": [
-      "me.steinborn.krypton.mod.server.KryptonServerInitializer"
+      "io.github.qazcto7.velonet.mod.server.VeloNetServerInitializer"
     ],
     "main": [
-      "me.steinborn.krypton.mod.shared.KryptonSharedInitializer"
+      "io.github.qazcto7.velonet.mod.shared.VeloNetSharedInitializer"
     ]
   },
   "mixins": [
-    "krypton.mixins.json"
+    "velonet.mixins.json"
   ],
-  "accessWidener": "krypton.accesswidener",
+  "accessWidener": "velonet.accesswidener",
   "depends": {
     "fabricloader": ">=0.18.4",
     "minecraft": ">=26.3"
