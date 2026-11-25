@@ -20,10 +20,10 @@ Upstream [Krypton](https://github.com/astei/krypton) optimizes Minecraft's Netty
 
 VeloNet diverges significantly from upstream Krypton to provide modern mod-pack compatibility, eliminate off-heap native memory leaks, and harden the Netty pipeline across platforms:
 
-- **ViaFabricPlus 5.1.3+ Pipeline Support:**
-  - Automatically reorders Netty `compress` / `decompress` handlers around `via-decoder` / `via-encoder` and maintains ViaFabricPlus 5.1.3's `via-flow-control` (`NoReadFlowControlHandler`) ordering without disconnects.
+- **ViaFabricPlus 5.1.4+ Pipeline Support:**
+  - Automatically reorders Netty `compress` / `decompress` handlers around `via-decoder` / `via-encoder` and maintains ViaFabricPlus's `via-flow-control` (`NoReadFlowControlHandler`) ordering without disconnects.
   - Detects ViaLegacy's `vialegacy-pre-netty-length-remover` (cached via channel attribute) and seamlessly switches to unified single-buffer framing to prevent `IndexOutOfBoundsException` on legacy servers.
-  - Preserves `KryptonPipelineEvent` signaling for third-party pipeline listeners.
+  - Preserves `KryptonPipelineEvent` signaling safely when Via pipeline handlers are active, preventing LAN server `NoSuchElementException` crashes alongside ViaFabricPlus 5.1.4.
 - **PacketFixer Integration & Off-Heap Leak Fixes:**
   - Dynamically reads and clamps PacketFixer's configured packet size limit (`dev.tonimatas.packetfixer.util.Config.getDecoderSize()`) instead of hard-failing on large modded payloads.
   - Immediately releases vanilla's unused `Varint21FrameDecoder.helperBuf` at construction and after PacketFixer's `@Inject(HEAD)` re-allocation, eliminating a per-connection off-heap direct memory leak.

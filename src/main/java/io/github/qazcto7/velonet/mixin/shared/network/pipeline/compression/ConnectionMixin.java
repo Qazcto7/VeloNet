@@ -5,12 +5,15 @@ import com.velocitypowered.natives.compression.VelocityCompressorFactory;
 import com.velocitypowered.natives.util.Natives;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
+import io.netty.channel.ChannelHandlerAdapter;
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import java.util.List;
 import java.util.function.Function;
 import me.steinborn.krypton.mod.shared.misc.KryptonPipelineEvent;
 import io.github.qazcto7.velonet.mod.shared.network.compression.VeloNetCompressDecoder;
 import io.github.qazcto7.velonet.mod.shared.network.compression.VeloNetCompressEncoder;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.network.Connection;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -21,6 +24,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Connection.class)
 public class ConnectionMixin {
+    @Unique
+    private static final boolean HAS_VIAFABRICPLUS = isViaFabricPlusLoaded();
+
     @Shadow
     private Channel channel;
 
@@ -70,11 +76,17 @@ public class ConnectionMixin {
             // Ensure pipeline ordering is 100% correct relative to ViaFabricPlus handlers
             reorderForViaFabricPlus(pipeline);
 
-            // Fire pipeline events for ViaFabricPlus and any listeners
+            // Fire pipeline events for ViaFabricPlus and any listeners.
+            // Guard COMPRESSION_ENABLED when ViaFabricPlus is present on connections without Via handlers
+            // (e.g. LAN server connections), since ViaFabricPlus's integration MixinConnection calls
+            // ViaChannelInitializer.reorderPipeline() without checking for via-decoder/via-encoder.
             if (updated) {
                 pipeline.fireUserEventTriggered(KryptonPipelineEvent.COMPRESSION_THRESHOLD_UPDATED);
             }
-            pipeline.fireUserEventTriggered(KryptonPipelineEvent.COMPRESSION_ENABLED);
+            boolean hasViaHandlers = pipeline.context("via-decoder") != null && pipeline.context("via-encoder") != null;
+            if (!HAS_VIAFABRICPLUS || hasViaHandlers) {
+                pipeline.fireUserEventTriggered(KryptonPipelineEvent.COMPRESSION_ENABLED);
+            }
         } else {
             if (pipeline.context("decompress") != null) {
                 pipeline.remove("decompress");
@@ -121,23 +133,46 @@ public class ConnectionMixin {
         ensureAfter(pipeline, "decompress", "via-decoder");
         // Outbound: In pipeline names list (head to tail), "compress" must appear before "via-encoder"
         ensureAfter(pipeline, "compress", "via-encoder");
-        // ViaFabricPlus 5.1.3 Flow Control: "via-flow-control" MUST sit AFTER "via-decoder"
+        // ViaFabricPlus 5.1.3+ Flow Control: "via-flow-control" MUST sit AFTER "via-decoder"
         ensureAfter(pipeline, "via-decoder", "via-flow-control");
     }
 
     @Unique
     private static void ensureAfter(ChannelPipeline pipeline, String anchorName, String targetName) {
-        if (pipeline.context(anchorName) == null || pipeline.context(targetName) == null) {
+        ChannelHandlerContext targetCtx = pipeline.context(targetName);
+        if (pipeline.context(anchorName) == null || targetCtx == null) {
             return;
         }
         List<String> names = pipeline.names();
         int anchorIdx = names.indexOf(anchorName);
         int targetIdx = names.indexOf(targetName);
-        if (anchorIdx != -1 && targetIdx != -1 && targetIdx < anchorIdx) {
-            ChannelHandler target = pipeline.remove(targetName);
-            if (target != null && pipeline.context(anchorName) != null) {
-                pipeline.addAfter(anchorName, targetName, target);
+        if (anchorIdx == -1 || targetIdx == -1 || targetIdx >= anchorIdx) {
+            return;
+        }
+
+        ChannelHandler existing = targetCtx.handler();
+        ChannelHandler toInsert = existing;
+        // Non-@Sharable handlers (like ViaFabricPlus's NoReadFlowControlHandler extending FlowControlHandler)
+        // cannot be re-added after removal in Netty; instantiate a fresh copy before removing when possible.
+        if (existing instanceof ChannelHandlerAdapter adapter && !adapter.isSharable()) {
+            try {
+                toInsert = existing.getClass().getConstructor().newInstance();
+            } catch (Throwable ignored) {
+                return;
             }
+        }
+
+        if (pipeline.remove(targetName) != null && pipeline.context(anchorName) != null) {
+            pipeline.addAfter(anchorName, targetName, toInsert);
+        }
+    }
+
+    @Unique
+    private static boolean isViaFabricPlusLoaded() {
+        try {
+            return FabricLoader.getInstance().isModLoaded("viafabricplus");
+        } catch (Throwable ignored) {
+            return false;
         }
     }
 }
