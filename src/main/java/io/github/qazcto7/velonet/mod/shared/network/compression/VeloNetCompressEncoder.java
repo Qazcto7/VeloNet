@@ -1,5 +1,6 @@
 package io.github.qazcto7.velonet.mod.shared.network.compression;
 
+import com.google.common.base.Preconditions;
 import com.velocitypowered.natives.compression.VelocityCompressor;
 import com.velocitypowered.natives.util.MoreByteBufUtils;
 import io.netty.buffer.ByteBuf;
@@ -17,7 +18,7 @@ public class VeloNetCompressEncoder extends CompressionEncoder {
     public VeloNetCompressEncoder(int threshold, VelocityCompressor compressor) {
         super(threshold);
         this.threshold = threshold;
-        this.compressor = compressor;
+        this.compressor = Preconditions.checkNotNull(compressor, "compressor");
 
         // Native zlib cleanup: vanilla's CompressionEncoder instantiates a native Deflater that is never used.
         // End it immediately to reclaim native zlib memory.

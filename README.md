@@ -20,26 +20,29 @@ Upstream [Krypton](https://github.com/astei/krypton) optimizes Minecraft's Netty
 
 VeloNet diverges significantly from upstream Krypton to provide modern mod-pack compatibility, eliminate off-heap native memory leaks, and harden the Netty pipeline across platforms:
 
+- **Eunomia `0.3.16+` & Universal Cooperative Mixins:**
+  - Verified zero-conflict compatibility with **Eunomia `0.3.16+26.3`** (custom payload injection, transport selection, and smoke-tested wire limits).
+  - Uses cooperative `@Inject(HEAD, cancellable = true)` hooks in `Varint21FrameDecoderMixin` (with higher priority than PacketFixer's default injector to skip unnecessary off-heap `helperBuf` allocations) and `Connection.createFrameEncoder` instead of destructive `@Overwrite`s, keeping vanilla bytecode intact for third-party mixins.
 - **ViaFabricPlus 5.1.4+ Pipeline Support:**
   - Automatically reorders Netty `compress` / `decompress` handlers around `via-decoder` / `via-encoder` and maintains ViaFabricPlus's `via-flow-control` (`NoReadFlowControlHandler`) ordering without disconnects.
   - Detects ViaLegacy's `vialegacy-pre-netty-length-remover` (cached via channel attribute) and seamlessly switches to unified single-buffer framing to prevent `IndexOutOfBoundsException` on legacy servers.
   - Preserves `KryptonPipelineEvent` signaling safely when Via pipeline handlers are active, preventing LAN server `NoSuchElementException` crashes alongside ViaFabricPlus 5.1.4.
 - **PacketFixer Integration & Off-Heap Leak Fixes:**
   - Dynamically reads and clamps PacketFixer's configured packet size limit (`dev.tonimatas.packetfixer.util.Config.getDecoderSize()`) instead of hard-failing on large modded payloads.
-  - Immediately releases vanilla's unused `Varint21FrameDecoder.helperBuf` at construction and after PacketFixer's `@Inject(HEAD)` re-allocation, eliminating a per-connection off-heap direct memory leak.
+  - Immediately releases vanilla's unused `Varint21FrameDecoder.helperBuf` at construction and bypasses PacketFixer's per-packet `@Inject(HEAD)` `Unpooled.directBuffer(...)` allocation while retaining a leak-safe cleanup guard.
   - Guards `Utf8String.write` against 32-bit signed integer overflow when PacketFixer passes large string length limits (`> Integer.MAX_VALUE / 3`).
 - **e4mc Compatibility:**
   - Replaces fragile login encryption redirection with MixinExtras `@WrapOperation` on `ServerLoginPacketListenerImpl.handleKey`, gracefully delegating when `e4mc` disables packet-level encryption on Dialtone connections and falling back cleanly to vanilla encryption if native initialization fails.
 - **Netty Lifecycle & Cross-Platform Safety:**
   - Intercepts writes on inactive channels in `write()` (`PipelineUtil.dropWriteIfInactive`) instead of returning empty output from `encode()`, eliminating Netty 4.2 `EncoderException: must produce at least one message` crashes.
-  - Removes premature native cipher/compressor disposal during outbound `close()`, relying safely on `handlerRemoved` / `handlerRemoved0` lifecycle cleanup and guarding buffer release on `Throwable`/`Error`.
+  - Prevents in-place cipher mutation on shared packet buffers (`refCnt() > 1`) via `PipelineUtil.ensureMutableCompatibleBuffer`, and disposes native codecs cleanly in `handlerRemoved` / `handlerRemoved0`.
   - Ensures single-NIO-buffer compatibility (`nioBufferCount() == 1`) for `CompositeByteBuf` inputs on `JavaVelocityCompressor` (fixing Windows and Intel macOS crashes).
-  - Handles zero-byte frames cleanly when compression `threshold == 0` and adds a DEFLATE theoretical expansion-ratio (1032:1) zip-bomb guard.
+  - Enforces exact uncompressed byte-count verification after `inflate()` alongside zero-byte `threshold == 0` handling and a DEFLATE 1032:1 expansion-ratio zip-bomb guard.
   - Extends vanilla `CompressionDecoder` / `CompressionEncoder` directly so `instanceof` checks in other mods continue to work, while ending unused vanilla `Inflater`/`Deflater` instances immediately.
 - **Additional Networking Refinements:**
   - Coalesces small packets (`<= 128` bytes) into a single buffer in `MinecraftVarintPrepender` while preserving zero-copy scatter/gather writes for larger packets.
   - Preserves Minecraft 26.3's `BandwidthDebugMonitor` (F3 network graph) metrics in `Varint21FrameDecoder`.
-  - Removes the upstream entity tracker mixin so VeloNet stays strictly focused on the networking layer with zero conflicts alongside mods like **Eunomia**, **Sodium**, **Lithium**, **TT20**, **ModernFix**, and **ResourceTrimmer**.
+  - Removes the upstream entity tracker mixin so VeloNet stays strictly focused on the networking layer with zero conflicts alongside mods like **Eunomia**, **Sodium**, **Lithium**, **TT20**, **SiliciumX**, **HyperBoost**, **ModernFix**, and **ResourceTrimmer**.
 
 ---
 

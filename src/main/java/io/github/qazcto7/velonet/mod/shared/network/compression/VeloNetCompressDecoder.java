@@ -1,5 +1,6 @@
 package io.github.qazcto7.velonet.mod.shared.network.compression;
 
+import com.google.common.base.Preconditions;
 import com.velocitypowered.natives.compression.VelocityCompressor;
 import com.velocitypowered.natives.util.MoreByteBufUtils;
 import io.netty.buffer.ByteBuf;
@@ -61,7 +62,7 @@ public class VeloNetCompressDecoder extends CompressionDecoder {
         super(threshold, validateDecompressed);
         this.threshold = threshold;
         this.validateDecompressed = validateDecompressed;
-        this.compressor = compressor;
+        this.compressor = Preconditions.checkNotNull(compressor, "compressor");
 
         // Native zlib cleanup: vanilla's CompressionDecoder instantiates a native Inflater that is never used.
         // End it immediately to reclaim native zlib memory.
@@ -126,6 +127,10 @@ public class VeloNetCompressDecoder extends CompressionDecoder {
             boolean added = false;
             try {
                 this.compressor.inflate(compatibleIn, uncompressed, claimedUncompressedLength);
+                if (uncompressed.readableBytes() != claimedUncompressedLength) {
+                    throw new DecoderException("Badly compressed packet - uncompressed size "
+                            + uncompressed.readableBytes() + " does not match claimed size " + claimedUncompressedLength);
+                }
                 out.add(uncompressed);
                 added = true;
                 in.skipBytes(in.readableBytes());
@@ -141,12 +146,6 @@ public class VeloNetCompressDecoder extends CompressionDecoder {
 
     @Override
     protected void handlerRemoved0(ChannelHandlerContext ctx) throws Exception {
-        this.compressor.close();
-    }
-
-    @Override
-    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        super.channelInactive(ctx);
         this.compressor.close();
     }
 

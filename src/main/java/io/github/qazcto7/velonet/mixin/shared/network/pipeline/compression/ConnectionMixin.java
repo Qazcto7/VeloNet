@@ -40,6 +40,7 @@ public class ConnectionMixin {
         ChannelPipeline pipeline = this.channel.pipeline();
 
         if (threshold >= 0) {
+            boolean added = false;
             boolean updated = false;
             ChannelHandler decompressHandler = pipeline.get("decompress");
             if (decompressHandler instanceof VeloNetCompressDecoder kryptonDecoder) {
@@ -55,6 +56,7 @@ public class ConnectionMixin {
                         "decompress",
                         compressor -> new VeloNetCompressDecoder(threshold, validateDecompressed, compressor)
                 );
+                added = true;
             }
 
             ChannelHandler compressHandler = pipeline.get("compress");
@@ -71,6 +73,7 @@ public class ConnectionMixin {
                         "compress",
                         compressor -> new VeloNetCompressEncoder(threshold, compressor)
                 );
+                added = true;
             }
 
             // Ensure pipeline ordering is 100% correct relative to ViaFabricPlus handlers
@@ -83,9 +86,11 @@ public class ConnectionMixin {
             if (updated) {
                 pipeline.fireUserEventTriggered(KryptonPipelineEvent.COMPRESSION_THRESHOLD_UPDATED);
             }
-            boolean hasViaHandlers = pipeline.context("via-decoder") != null && pipeline.context("via-encoder") != null;
-            if (!HAS_VIAFABRICPLUS || hasViaHandlers) {
-                pipeline.fireUserEventTriggered(KryptonPipelineEvent.COMPRESSION_ENABLED);
+            if (added) {
+                boolean hasViaHandlers = pipeline.context("via-decoder") != null && pipeline.context("via-encoder") != null;
+                if (!HAS_VIAFABRICPLUS || hasViaHandlers) {
+                    pipeline.fireUserEventTriggered(KryptonPipelineEvent.COMPRESSION_ENABLED);
+                }
             }
         } else {
             if (pipeline.context("decompress") != null) {

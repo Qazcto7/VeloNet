@@ -2,7 +2,6 @@ package io.github.qazcto7.velonet.mod.shared.network.pipeline;
 
 import com.google.common.base.Preconditions;
 import com.velocitypowered.natives.encryption.VelocityCipher;
-import com.velocitypowered.natives.util.MoreByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
@@ -27,7 +26,7 @@ public class MinecraftCipherEncoder extends MessageToMessageEncoder<ByteBuf> {
 
     @Override
     protected void encode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) throws Exception {
-        ByteBuf compatible = MoreByteBufUtils.ensureCompatible(ctx.alloc(), this.cipher, msg);
+        ByteBuf compatible = PipelineUtil.ensureMutableCompatibleBuffer(ctx.alloc(), this.cipher, msg);
         boolean added = false;
         try {
             this.cipher.process(compatible);

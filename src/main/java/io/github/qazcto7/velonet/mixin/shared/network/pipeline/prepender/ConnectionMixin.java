@@ -5,15 +5,14 @@ import io.github.qazcto7.velonet.mod.shared.network.pipeline.MinecraftVarintPrep
 import net.minecraft.network.Connection;
 import net.minecraft.network.LocalFrameEncoder;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Connection.class)
 public class ConnectionMixin {
-    @Overwrite
-    private static ChannelOutboundHandler createFrameEncoder(boolean local) {
-        if (local) {
-            return new LocalFrameEncoder();
-        }
-        return MinecraftVarintPrepender.INSTANCE;
+    @Inject(method = "createFrameEncoder", at = @At("HEAD"), cancellable = true)
+    private static void velonet$createFrameEncoder(boolean local, CallbackInfoReturnable<ChannelOutboundHandler> cir) {
+        cir.setReturnValue(local ? new LocalFrameEncoder() : MinecraftVarintPrepender.INSTANCE);
     }
 }

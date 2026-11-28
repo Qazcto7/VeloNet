@@ -10,7 +10,6 @@ import net.minecraft.network.Varint21FrameDecoder;
 import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
-import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -19,7 +18,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
 
-@Mixin(Varint21FrameDecoder.class)
+// Higher priority wraps outside PacketFixer's default (1000) HEAD injector so VeloNet short-circuits before
+// PacketFixer allocates a per-packet direct helperBuf, while preserving vanilla bytecode for third-party mixins.
+@Mixin(value = Varint21FrameDecoder.class, priority = 1100)
 public class Varint21FrameDecoderMixin {
     @Shadow
     @Nullable
@@ -33,19 +34,17 @@ public class Varint21FrameDecoderMixin {
     @Inject(method = "<init>", at = @At("RETURN"))
     private void velonet$releaseUnusedHelperBuf(BandwidthDebugMonitor monitor, CallbackInfo ci) {
         // VeloNet decodes VarInt frames in-place without helperBuf; release vanilla's direct buffer immediately.
-        // Also prevents leaking the constructor's buffer when PacketFixer overwrites helperBuf at HEAD of decode().
         this.velonet$releaseHelperBuf();
     }
 
-    @Overwrite
-    public void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
-        // PACKETFIXER COMPATIBILITY:
-        // PacketFixer injects at HEAD of decode() and allocates a fresh Unpooled.directBuffer(...) into helperBuf
-        // on every invocation. Release it immediately since VeloNet decodes VarInt frames in-place.
+    @Inject(method = "decode", at = @At("HEAD"), cancellable = true)
+    private void velonet$decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out, CallbackInfo ci) {
+        ci.cancel();
+        // Release any helperBuf allocated by an even-higher-priority mixin before VeloNet runs.
         this.velonet$releaseHelperBuf();
 
         if (!ctx.channel().isActive()) {
-            in.clear();
+            in.skipBytes(in.readableBytes());
             return;
         }
 
@@ -56,9 +55,6 @@ public class Varint21FrameDecoderMixin {
             return;
         }
 
-        if (length < 0) {
-            throw WellKnownExceptions.BAD_LENGTH_CACHED;
-        }
         if (length > VeloNetCompressDecoder.getMaxFrameCap()) {
             throw WellKnownExceptions.FRAME_TOO_LARGE_CACHED;
         }
@@ -78,8 +74,9 @@ public class Varint21FrameDecoderMixin {
         out.add(in.readRetainedSlice(length));
     }
 
-    @Overwrite
-    protected void handlerRemoved0(ChannelHandlerContext ctx) {
+    @Inject(method = "handlerRemoved0", at = @At("HEAD"), cancellable = true)
+    private void velonet$handlerRemoved0(ChannelHandlerContext ctx, CallbackInfo ci) {
+        ci.cancel();
         this.velonet$releaseHelperBuf();
     }
 

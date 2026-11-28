@@ -1,6 +1,7 @@
 package io.github.qazcto7.velonet.mod.shared.network.util;
 
 import com.velocitypowered.natives.compression.VelocityCompressor;
+import com.velocitypowered.natives.encryption.VelocityCipher;
 import com.velocitypowered.natives.util.MoreByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
@@ -31,6 +32,28 @@ public final class PipelineUtil {
             promise.tryFailure(new ClosedChannelException());
         }
         return true;
+    }
+
+    /**
+     * Ensures {@code in} is compatible with {@code cipher} and exclusively owned ({@code refCnt() == 1})
+     * so in-place encryption/decryption never mutates shared packet buffers.
+     */
+    public static ByteBuf ensureMutableCompatibleBuffer(
+            ByteBufAllocator alloc,
+            VelocityCipher cipher,
+            ByteBuf in
+    ) {
+        if (in.refCnt() == 1) {
+            return MoreByteBufUtils.ensureCompatible(alloc, cipher, in);
+        }
+        ByteBuf copy = MoreByteBufUtils.preferredBuffer(alloc, cipher, in.readableBytes());
+        try {
+            copy.writeBytes(in, in.readerIndex(), in.readableBytes());
+            return copy;
+        } catch (Throwable t) {
+            copy.release();
+            throw t;
+        }
     }
 
     /**
